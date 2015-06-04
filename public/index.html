@@ -16,8 +16,11 @@
             data = data + fill[i % 4];
         }
 
-//        socket.send(" ");
         socket.send(data);
+    };
+
+    socket.onmessage = function (m) {
+        console.log("Message: " + m.data);
     };
 
 </script>
