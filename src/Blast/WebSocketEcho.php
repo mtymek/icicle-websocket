@@ -8,8 +8,9 @@ class WebSocketEcho
     {
         yield $connection->send(
             sprintf(
-                "TO %s: ECHO: %s",
-                $connection->getClient()->getLocalAddress(),
+                "TO %s:%s: ECHO: %s",
+                $connection->getClient()->getRemoteAddress(),
+                $connection->getClient()->getRemotePort(),
                 $frame->getData()
             )
         );
