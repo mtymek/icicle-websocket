@@ -32,26 +32,10 @@ class WebSocketConnection
     }
 
     /**
-     * @param ClientInterface $client
-     */
-    public function setClient($client)
-    {
-        $this->client = $client;
-    }
-
-    /**
      * @return RequestInterface
      */
     public function getRequest()
     {
         return $this->request;
-    }
-
-    /**
-     * @param RequestInterface $request
-     */
-    public function setRequest($request)
-    {
-        $this->request = $request;
     }
 }
