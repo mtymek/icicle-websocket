@@ -1,0 +1,26 @@
+<html>
+<head>
+    <title>WebSocket test - raw</title>
+</head>
+<body>
+
+
+<script>
+
+    var socket = new WebSocket("ws://127.0.0.1:8080");
+    socket.onopen =function () {
+
+        var data = "";
+        var fill = ['a', 'b', 'c', 'd']
+        for (var i=0; i<7; i++) {
+            data = data + fill[i % 4];
+        }
+
+//        socket.send(" ");
+        socket.send(data);
+    };
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,21 @@
+{
+    "name": "mtymek/icicle-websocket",
+    "require": {
+        "icicleio/icicle": "~0.5",
+        "icicleio/http": "dev-master@dev"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.6"
+    },
+    "authors": [
+        {
+            "name": "Mateusz Tymek",
+            "email": "mtymek@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Blast\\": "src/Blast"
+        }
+    }
+}
