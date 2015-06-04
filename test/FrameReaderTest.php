@@ -24,6 +24,7 @@ class FrameParserTest extends PHPUnit_Framework_TestCase
             $this->assertEquals(1, $frame->getFin());
             $this->assertEquals(Frame::OPCODE_TEXT, $frame->getOpcode());
             $this->assertEquals(1, $frame->getMask());
+            $this->assertEquals("\x81\x9b\xca\xbd", $frame->getMaskingKey());
             $this->assertEquals('abcdabc', $frame->getData());
         });
 

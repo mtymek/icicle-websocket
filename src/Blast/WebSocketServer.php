@@ -54,5 +54,6 @@ class WebSocketServer extends Server
         $parser = new FrameReader();
         $frame = (yield $parser->read($client));
         print_r($frame);
+        echo bin2hex($frame->getMaskingKey());
     }
 }
