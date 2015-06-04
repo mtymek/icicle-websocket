@@ -51,8 +51,8 @@ class WebSocketServer extends Server
 
     public function handleWsRequest(ClientInterface $client)
     {
-        $parser = new FrameParser();
-        $frame = (yield $parser->readFrame($client));
+        $parser = new FrameReader();
+        $frame = (yield $parser->read($client));
         print_r($frame);
     }
 }

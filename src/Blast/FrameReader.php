@@ -2,15 +2,19 @@
 
 namespace Blast;
 
+use Generator;
+use Icicle\Stream\ReadableStreamInterface;
 
-use Icicle\Socket\Client\ClientInterface;
-
-class FrameParser
+class FrameReader
 {
-    public function readFrame(ClientInterface $client)
+    /**
+     * @param ReadableStreamInterface $stream
+     * @return Generator|Frame
+     */
+    public function read(ReadableStreamInterface $stream)
     {
-        $byte1 = ord((yield $client->read(1)));
-        $byte2 = ord((yield $client->read(1)));
+        $byte1 = ord((yield $stream->read(1)));
+        $byte2 = ord((yield $stream->read(1)));
 
         $fin    = ($byte1 & 0b10000000) >> 7;
         $rsv1   = ($byte1 & 0b01000000) >> 6;
@@ -21,19 +25,19 @@ class FrameParser
 
         $length = ($byte2 & 0b01111111);
         if ($length == 126) {
-            $bytes = (yield $client->read(2));
+            $bytes = (yield $stream->read(2));
             $length = unpack('n', $bytes)[1];
         } elseif ($length == 127) {
-            $bytes1 = unpack('N', (yield $client->read(4)))[1];
-            $bytes2 = unpack('N', (yield $client->read(4)))[1];
+            $bytes1 = unpack('N', (yield $stream->read(4)))[1];
+            $bytes2 = unpack('N', (yield $stream->read(4)))[1];
             $length = $bytes1 * (2 >> 32) + $bytes2;
         }
 
-        $maskingKey = (yield $client->read(4));
+        $maskingKey = (yield $stream->read(4));
 
         $buffer = '';
         for ($i = 0; $i < $length; $i++) {
-            $byte = (yield $client->read(1));
+            $byte = (yield $stream->read(1));
             $buffer .= $byte ^ $maskingKey[$i % 4];
         }
         $data = $buffer;
