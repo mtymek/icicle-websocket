@@ -68,8 +68,8 @@ class WebSocketServer extends Server
         $parser = new FrameReader();
         $frame = (yield $parser->read($connection->getClient()));
 
-        if ($this->onMessage) {
-            yield $this->onMessage($connection, $frame);
+        if ($handler = $this->onMessage) {
+            yield $handler($connection, $frame);
         }
     }
 }

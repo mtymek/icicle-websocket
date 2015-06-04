@@ -38,4 +38,11 @@ class WebSocketConnection
     {
         return $this->request;
     }
+
+    public function send($data)
+    {
+        $frame = new Frame(1, Frame::OPCODE_TEXT, 0, strlen($data), null, $data);
+        $serializer = new FrameSerializer();
+        yield $this->client->write($serializer->serialize($frame));
+    }
 }
