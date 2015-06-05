@@ -5,6 +5,7 @@ namespace Blast;
 use Icicle\Coroutine\Coroutine;
 use Icicle\Http\Message\RequestInterface;
 use Icicle\Http\Message\Response;
+use Icicle\Http\Message\ResponseInterface;
 use Icicle\Http\Server\Server;
 use Icicle\Socket\Client\ClientInterface;
 
@@ -18,13 +19,10 @@ class WebSocketServer extends Server
     public function __construct(callable $onMessage = null)
     {
         parent::__construct(
-            [$this, 'handshake']
+            [$this, 'handshake'],
+            null,
+            [$this, 'handleWsRequest']
         );
-//        parent::__construct(
-//            [$this, 'handshake'],
-//            null,
-//            function (ClientInterface $client) {}
-//        );
         $this->onMessage = $onMessage;
     }
 
@@ -56,20 +54,19 @@ class WebSocketServer extends Server
                 )
             );
 
-        $connection = new WebSocketConnection($request, $client);
-
-        (new Coroutine($this->handleWsRequest($connection)))->done();
-
         return $response;
     }
 
-    public function handleWsRequest(WebSocketConnection $connection)
-    {
+    public function handleWsRequest(
+        RequestInterface $request,
+        ResponseInterface $response,
+        ClientInterface $client
+    ) {
         $parser = new FrameReader();
-        $frame = (yield $parser->read($connection->getClient()));
+        $frame = (yield $parser->read($client));
 
         if ($handler = $this->onMessage) {
-            yield $handler($connection, $frame);
+            yield $handler(new WebSocketConnection($request, $response, $client), $frame);
         }
     }
 }

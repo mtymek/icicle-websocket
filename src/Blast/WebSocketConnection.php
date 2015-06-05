@@ -3,6 +3,7 @@
 namespace Blast;
 
 use Icicle\Http\Message\RequestInterface;
+use Icicle\Http\Message\ResponseInterface;
 use Icicle\Socket\Client\ClientInterface;
 
 class WebSocketConnection
@@ -17,10 +18,16 @@ class WebSocketConnection
      */
     private $request;
 
-    public function __construct(RequestInterface $request, ClientInterface $client)
+    /**
+     * @var ResponseInterface
+     */
+    private $response;
+
+    public function __construct(RequestInterface $request, ResponseInterface $response, ClientInterface $client)
     {
         $this->client = $client;
         $this->request = $request;
+        $this->response = $response;
     }
 
     /**
@@ -37,6 +44,14 @@ class WebSocketConnection
     public function getRequest()
     {
         return $this->request;
+    }
+
+    /**
+     * @return ResponseInterface
+     */
+    public function getResponse()
+    {
+        return $this->response;
     }
 
     public function send($data)
