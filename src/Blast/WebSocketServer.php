@@ -62,11 +62,12 @@ class WebSocketServer extends Server
         ResponseInterface $response,
         ClientInterface $client
     ) {
+        $connection = new WebSocketConnection($request, $response, $client);
         $parser = new FrameReader();
-        $frame = (yield $parser->read($client));
+        $handler = $this->onMessage;
 
-        if ($handler = $this->onMessage) {
-            yield $handler(new WebSocketConnection($request, $response, $client), $frame);
+        while ($frame = (yield $parser->read($client))) {
+            yield $handler($connection, $frame);
         }
     }
 }
